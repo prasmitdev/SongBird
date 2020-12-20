@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Songbird</title>
+
+</head>
+
+<body>
+  <center>
+
+  <a href="index.html">
+	  <img id="logo" src="imgs/Songbird_logo.png" alt="Songbird Logo" height="290" width="863">
+  </a>
+
+  <table>
+  <td>
+  <center>
+  @<input type="text" ID="entry" size=25 onkeypress="
+	if (event.keyCode == 13)
+		compare.click();
+  ">'s tweets:
+  </center>
+  </td>
+  <td>
+  <center>
+  <button id="compare" style="width:100%;height:3em" onclick="
+	document.title = `Songbird: @${entry.value}`;
+	var matches_only = (get_cookie('matches_only') == 'true');
+	clear_pairs();
+	clear_max();
+	show_progress('Fetching tweets...');
+	get_tweets(entry.value).then((results) => {
+		if (results.length == 0) {
+			show_progress('No recent tweets found.');
+		} else {
+			show_progress('Matching...');
+			Promise.all(results.map(tweet => lyric_search(tweet).then((match) => {
+				if (!match && matches_only)
+					return;
+				inc_counter(match);
+				show_pair(tweet, match);
+			}))).then(() => {
+				show_max(get_max_artist());
+				if (pairs.innerHTML === '')
+					show_progress('No matches found.');
+				else
+					show_progress('');
+			});
+		}
+	});">Compare</button>
+  </center>
+  </td>
+  </table>
+  <output type="text" ID="output"></output>
+  <h4 id="progress"></h4> <!-- Filled in by DOM -->
+
+  <table id="pairs" style="width:100%">
+	  <!-- <th>
+     <td><h4>Tweets List</h4></td>
+     <td><h4>Most Matching song Lyrics</h4></td> 
+    </th> -->
+    
+  </table>
+	  
+  <table id="max">
+  </table>
+  
+  <script src="scripts.js"></script>
+<script>
+function show_pair(tweet, match) {
+	// match => {song: "...", artist: "..."}
+
+	// Show on screen (using DOM) a tweet with its match.
+	let table = document.getElementById("pairs");
+	let newRow = table.insertRow(-1);
+	let tweetCell = newRow.insertCell(0);
+	let lyricsCell = newRow.insertCell(1);
+
+	tweetCell.innerHTML = tweet;
+
+	if (match) {
+		lyricsCell.innerHTML = `${match.song} <hr> ${match.artist}`;
+		get_wiki_summary(match.artist).then((extract) => {
+			if (extract) {
+				extract = ellipsis(extract, 280);
+				extract += `
+				<br>
+				<a href="https://en.wikipedia.org/wiki/${match.artist}">
+					<i>From Wikipedia, the Free Encyclopedia</i>
+				</a>`;
+			} else {
+				extract = `No Wikipedia article found.`;
+			}
+			lyricsCell.innerHTML = `
+			${match.song}
+			<hr>
+			<div id="artist" data-placement="right">
+				${match.artist}
+				<span id="description">
+				${extract}
+				</span>
+			</div>
+			`;
+			
+		});
+	}
+	else
+		lyricsCell.innerHTML = 'No match found.';
+
+	// No return value
+}
+
+function show_max(artist) {
+	if (!artist)
+		document.getElementById("max").innerHTML = `
+			<th><center><h4>
+			@${entry.value}'s tweets do not closely match the works of any one artist.
+			</h4></center></th>
+		`;
+	else
+		get_wiki_summary(artist).then((extract) => {
+			if (extract) {
+				extract = `${ellipsis(extract, 280*2)} <br>
+				<br>
+				<a href="https://en.wikipedia.org/wiki/${artist}">
+					<i>From Wikipedia, the Free Encyclopedia</i>
+				</a>`;
+			} else {
+				extract = 'No Wikipedia article found.';
+			}
+			document.getElementById("max").innerHTML = `
+				<th><center><h4>
+				@${entry.value}'s tweets most closely match the works of: <br>
+				${artist} <br>
+				</h4>
+				<br>
+				<p style="font-size: 11px"> ${extract} </p>
+				</center></th>
+			`;
+		});
+}
+
+set_high_contrast(get_cookie('contrast') == 'true');
+
+lang = 'en';
+
+const url_params = new URLSearchParams(window.location.search);
+
+var query = url_params.get('q');
+if (query) {
+	entry.value = query;
+	compare.click();
+}
+
+</script>
+
+  </center>
+</body>
+
+</html>

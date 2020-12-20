@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<link rel="stylesheet" type="text/css" href="style.css">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Songbird</title>
+
+</head>
+<body>
+    <center>
+    <a href="index_fr.html">
+	    <img id="logo" src="imgs/Songbird_logo.png" alt="Songbird Logo" height="290" width="863">
+    </a>
+    </center>
+    <style type="text/css">
+        #HowItWorks{
+            border: solid var(--borders) 1px;
+            /*padding-right: 50%;*/
+            background-color: white;
+			border-radius: 1em;
+			line-height: 20px;
+        }
+        #notes{
+            border: solid var(--borders) 1px;
+            /*padding-left: 60%;*/
+            background-color: white;
+			border-radius: 1em;
+			line-height: 20px;
+            
+        }
+		#input {
+			border: solid var(--borders) 1px;
+            /*padding-left: 60%;*/
+            background-color: white;
+			border-radius: 1em;
+			line-height: 20px;
+		}
+        #txtbox{
+            top:5px;
+            right: 10px;
+            height: 50px;
+            width: 370px;
+            font-size: 16pt;
+			border: solid var(--borders) 1px;
+        }
+        #label{
+			font-size: 15pt;
+        }
+		#at {
+			font-size: 16pt;
+		}
+		#options {
+			border: solid var(--borders) 1px;
+			background-color: white;
+			line-height: 20px;
+			border-radius: 1em;
+			margin-top: 8px;
+		}
+		#contrast {
+			margin-top: 10px;
+			margin-right: 22px;
+			margin-bottom: 5px;
+		}
+		#nomatch {
+			margin-top: 5px;
+			margin-bottom: 5px;
+		}
+       
+    </style>
+        <div id="Body">
+     <div class= "container">
+            <center>
+            <div id = "HowItWorks" class = "layer1">
+                <b>Comment ça fonctionne:</b>
+                <p>
+		<br>
+		<br>
+		Cette application est conçue pour rechercher les tweets récents d'un compte Twitter et les comparer à la base de données des paroles de Genius.
+		<br>
+		<br>
+		<br>
+		Lorsque l'appariement est terminé, l'artiste ou le groupe qui correspond le plus sera affiché à côté d'un résumé de leur article Wikipédia, le cas échéant.
+		<br>
+		<br>
+		</p>
+            </div>
+            </center>
+
+            <div id = "notes" class = "layer1">
+				<center><b>Remarques</b></center>
+				<ul style="margin-right: 1em">
+					<li>En plus des chansons, les tweets peuvent correspondre à d'autres œuvres en raison de la base de données variée de Genius.</li>
+					<li>Si un tweet est original, il affichera "Aucune correspondance trouvée" à la place. Cela peut être désactivé dans les options.</li>
+					<li>Les tweets de comptes privés ou restreints ne seront pas affichés dans les résultats.</li>
+					<li>Seuls les tweets de la semaine dernière peuvent être récupérés.</li>
+					<li>Pour voir le résumé Wikipedia d'un artiste / groupe, placez le curseur de la souris sur son nom.</li>
+				</ul>
+            </div>
+            <center>
+            <div id = "options">
+				<b>Les options</b>
+                <div id = "contrast">
+                    <input type="checkbox" id="highcontrast" name = "highcontrast" value = "highcontrast" onclick = "
+					set_cookie('contrast',highcontrast.checked);
+					set_high_contrast(highcontrast.checked);
+					">
+                    <label for="highcontrast"> Activer le mode à contraste élevé </label>
+                </div>
+				
+		        <div id = "nomatch">
+		        <input type="checkbox" id="nomatchfound" value="nomatch" onclick = "
+		    			set_cookie('matches_only',nomatchfound.checked);
+					">
+		        <label for="nomatchfound">Afficher uniquement les correspondances réussies</label>
+            </div>
+            </center>
+
+            <center>
+            <div id = "twitter">
+                <label id= "label">
+                <i>Entrez un identifiant Twitter ici: </i>
+				</label><br>
+				<label for = "txtbox" style="font-size: 16pt">@</label>
+				<input type="text"  placeholder= "songbirdtamu" id="txtbox" name = "txtbox" autofocus onkeypress="
+					if (event.keyCode == 13)
+						btn.click();
+					">
+            </div>
+            </center>
+        </div>
+        
+        <center>
+        <button type="button" id = "btn" onclick = "
+		window.open('matcher_fr.html?q='+txtbox.value, '_self');
+		">
+        COMPARER!
+        </button>
+        </center>
+ 
+        <style type="text/css">
+            #btn{
+                position: relative;
+                padding: 20px 20px;
+                top: 45px;
+              font-family: Georgia;
+              font-weight: bold;
+
+            }
+        </style>
+        </div>
+
+    <br><br><br>
+    <center>
+    <footer>
+        <div id="footer_text">
+            <p>Créé par:
+            <br>Mark Johnson, Cameron Norris, John Allan Plunk, Prasmit Devkota
+            <br>2020 TweetyTunes Team™</p>
+        </div>
+		
+        <div id="footer_imgs">
+            <a href="index.html"><img src="imgs/united-kingdom-flag.png" alt="UK" width="64" height="64"></a>
+            <a href="index_es.html"><img src="imgs/spain-flag.png" alt="Spain" width="64" height="64"></a>
+            <a href="index_fr.html"><img src="imgs/france-flag.png" alt="France" width="64" height="64"></a>
+        </div>
+    </footer>
+    </center>
+    <script src="scripts.js"></script>
+    <script>
+		set_high_contrast(get_cookie('contrast') == 'true');
+	    if (get_cookie('contrast') == 'true')
+	        highcontrast.checked=true;
+	    if (get_cookie('matches_only') == 'true')
+	        nomatchfound.checked=true;
+		lang = 'fr';
+    </script>
+	
+</body>
+</html>
